@@ -34,24 +34,6 @@
     :copyright: Copyright 2006-2009 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
-
-# Options
-# ~~~~~~~
-
-# Set to True if you want inline CSS styles instead of classes
-INLINESTYLES = False
-
-from pygments.formatters import HtmlFormatter
-
-# The default formatter
-DEFAULT = HtmlFormatter(noclasses=INLINESTYLES)
-
-BOT_HEADER = """
-size{size}
-background(1)
-fill(.95,.75,0)
-"""
-
 import os
 
 from docutils import nodes
@@ -62,7 +44,7 @@ from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
 
 from sphinx.errors import SphinxError
-from sphinx.util import ensuredir, relative_uri
+from sphinx.util import ensuredir
 
 try:
     from hashlib import sha1 as sha
@@ -71,7 +53,23 @@ except ImportError:
 
 import subprocess
 
-def get_hashid(text,options):
+# Options
+# ~~~~~~~
+
+# Set to True if you want inline CSS styles instead of classes
+INLINESTYLES = False
+
+# The default formatter
+DEFAULT = HtmlFormatter(noclasses=INLINESTYLES)
+
+BOT_HEADER = """
+size{size}
+background(1)
+fill(.95,.75,0)
+"""
+
+
+def get_hashid(text, options):
     hashkey = text.encode('utf-8') + str(options)
     hashid = sha(hashkey).hexdigest()
     return hashid
@@ -88,6 +86,7 @@ def html_img_tag(src):
 def align(argument):
     """Conversion function for the "align" option."""
     return directives.choice(argument, ('left', 'center', 'right'))
+
 
 def size_opt(argument):
     if isinstance(argument, tuple):
@@ -142,13 +141,13 @@ class ShoebotDirective(Directive):
 
             # TODO - Support other output formats
             image_node = nodes.raw('', html_img_tag(rel_filename), format='html')
-            result.insert(0,image_node)
-        
-        return result
+            result.insert(0, image_node)
 
+        return result
 
 
 def setup(app):
     pass
+
 
 directives.register_directive('shoebot', ShoebotDirective)
