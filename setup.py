@@ -20,7 +20,7 @@ requires = ['Sphinx>=1.4.1', 'pip>=8.1.1']
 
 setup(
     name='sphinxcontrib-shoebot',
-    version='1.2.6',
+    version='1.2.7',
     url='https://github.com/shoebot/shoebot/tree/readthedocs/doc/sphinxcontrib_shoebot',
     license='BSD',
     author='Stuart Axon',
