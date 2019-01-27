@@ -53,10 +53,6 @@ class ShoebotError(SphinxError):
     category = "shoebot error"
 
 
-def html_img_tag(src):
-    return '<img src="_static/{}">'.format(src)
-
-
 def align(argument):
     """Conversion function for the "align" option."""
     return directives.choice(argument, ("left", "center", "right"))
@@ -78,9 +74,9 @@ class ShoebotDirective(Directive):
     final_argument_whitespace = True
 
     option_spec = {
-        "snapshot": directives.flag,
+        "alt": str,
+        "filename": str,
         "size": size_opt,
-        "linenos": HtmlFormatter(noclasses=INLINESTYLES, linenos=True),
         "source": str,
     }
     has_content = True
@@ -126,4 +122,3 @@ def setup(app):
 
 
 directives.register_directive("shoebot", ShoebotDirective)
-
