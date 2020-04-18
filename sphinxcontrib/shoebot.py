@@ -43,8 +43,8 @@ fill(.95,.75,0)
 """
 
 
-def get_hashid(text, options):
-    hashkey = text.encode("utf-8") + str(options)
+def get_hashid(text, options=""):
+    hashkey = (text + options).encode("utf-8")
     hashid = sha(hashkey).hexdigest()
     return hashid
 
@@ -59,6 +59,7 @@ def align(argument):
 
 
 def size_opt(argument):
+    """Decode the size option"""
     if isinstance(argument, tuple):
         return argument
     else:
@@ -73,12 +74,7 @@ class ShoebotDirective(Directive):
     optional_arguments = 1
     final_argument_whitespace = True
 
-    option_spec = {
-        "alt": str,
-        "filename": str,
-        "size": size_opt,
-        "source": str,
-    }
+    option_spec = {"alt": str, "filename": str, "size": size_opt, "source": str}
     has_content = True
 
     def run(self):
@@ -92,7 +88,7 @@ class ShoebotDirective(Directive):
         options_dict = dict(self.options)
         opt_size = options_dict.get("size", (100, 100))
 
-        fn = options_dict.get("filename") or "{}.png".format(sha(text).hexdigest())
+        fn = options_dict.get("filename") or "{}.png".format(get_hashid(text))
 
         env = self.state.document.settings.env
         rel_filename, filename = env.relfn2path(fn)
@@ -101,7 +97,7 @@ class ShoebotDirective(Directive):
         ensuredir(os.path.dirname(outfn))
         script_to_render = BOT_HEADER.format(size=opt_size) + text
         if os.path.isfile(outfn):
-            raise ShoebotError("File %s exists, not overwriting.")
+            raise ShoebotError("File %s exists, not overwriting." % outfn)
         try:
             cmd = ["sbot", "-o", "%s" % outfn, script_to_render]
             subprocess.call(cmd)
