@@ -80,34 +80,31 @@ class ShoebotDirective(Directive):
     def run(self):
         self.assert_has_content()
 
+        env = self.state.document.settings.env
+
         text = "\n".join(self.content)
         parsed = highlight(text, PythonLexer(), HtmlFormatter())
-
         result = [nodes.raw("", parsed, format="html")]
 
         options_dict = dict(self.options)
-        opt_size = options_dict.get("size", (100, 100))
+        image_size = options_dict.get("size", (100, 100))
 
-        fn = options_dict.get("filename") or "{}.png".format(get_hashid(text))
+        output_image = options_dict.get("filename") or "{}.png".format(get_hashid(text))
+        output_dir = os.path.normpath(env.srcdir + "/../build-images/examples")
 
-        env = self.state.document.settings.env
-        rel_filename, filename = env.relfn2path(fn)
+        ensuredir(output_dir)
 
-        outfn = os.path.join(env.app.builder.outdir, "_static", rel_filename)
-        ensuredir(os.path.dirname(outfn))
-        script_to_render = BOT_HEADER.format(size=opt_size) + text
-        if os.path.isfile(outfn):
-            raise ShoebotError("File %s exists, not overwriting." % outfn)
+        script_to_render = BOT_HEADER.format(size=image_size) + text
         try:
-            cmd = ["sbot", "-o", "%s" % outfn, script_to_render]
+            cmd = ["sbot", "-o", os.path.join(output_dir, output_image), script_to_render]
             subprocess.call(cmd)
         except Exception as e:
-            print("oops %e" % e)
+            print("Exception running shoebot script %e" % e)
             print("cmd: ")
             print(" ".join(cmd))
             raise ShoebotError(str(e))
 
-        image_node = nodes.image(uri="_static/{}".format(rel_filename), alt="test")
+        image_node = nodes.image(uri="../build-images/examples/{}".format(output_image))
         result.insert(0, image_node)
 
         return result
