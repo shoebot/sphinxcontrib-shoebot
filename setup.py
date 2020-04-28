@@ -3,7 +3,7 @@
 # Base off the gnuplot extension
 from setuptools import setup, find_packages
 
-long_desc = '''
+long_desc = """
 This package enables Sphinx documents to render graphics using shoebot.
 
 Example::
@@ -13,35 +13,35 @@ Example::
      fill(0, 128, 128)
      rect(0, 0, 40, 40)
       
-'''
+"""
 
 # Requires shoebot, but that is not included to avoid a circular dependency.
-requires = ['Sphinx>=1.4.1', 'pip>=8.1.1']
+requires = ["Sphinx>=1.4.1", "pip>=8.1.1"]
 
 setup(
-    name='sphinxcontrib-shoebot',
-    version='1.3.2',
-    url='https://github.com/shoebot/shoebot/tree/readthedocs/doc/sphinxcontrib_shoebot',
-    license='BSD',
-    author='Stuart Axon',
-    author_email='stuaxo2@yahoo.com',
-    description='Sphinx extension shoebot',
+    name="sphinxcontrib-shoebot",
+    version="1.3.2",
+    url="https://github.com/shoebot/shoebot/tree/readthedocs/doc/sphinxcontrib_shoebot",
+    license="BSD",
+    author="Stuart Axon",
+    author_email="stuaxo2@yahoo.com",
+    description="Sphinx extension shoebot",
     long_description=long_desc,
     zip_safe=False,
     classifiers=[
-        'Development Status :: 4 - Beta',
-        'Environment :: Console',
-        'Environment :: Web Environment',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Topic :: Documentation',
-        'Topic :: Utilities',
+        "Development Status :: 4 - Beta",
+        "Environment :: Console",
+        "Environment :: Web Environment",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: BSD License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Topic :: Documentation",
+        "Topic :: Utilities",
     ],
-    platforms='any',
+    platforms="any",
     packages=find_packages(),
     include_package_data=True,
     install_requires=requires,
-    namespace_packages=['sphinxcontrib'],
+    namespace_packages=["sphinxcontrib"],
 )

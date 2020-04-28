@@ -96,7 +96,12 @@ class ShoebotDirective(Directive):
 
         script_to_render = BOT_HEADER.format(size=image_size) + text
         try:
-            cmd = ["sbot", "-o", os.path.join(output_dir, output_image), script_to_render]
+            cmd = [
+                "sbot",
+                "-o",
+                os.path.join(output_dir, output_image),
+                script_to_render,
+            ]
             subprocess.call(cmd)
         except Exception as e:
             print("Exception running shoebot script %e" % e)
