@@ -67,8 +67,7 @@ def size_opt(argument):
 
 
 class ShoebotDirective(Directive):
-    """ Source code syntax hightlighting.
-    """
+    """Source code syntax hightlighting."""
 
     required_arguments = 0
     optional_arguments = 1
