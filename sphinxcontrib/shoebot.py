@@ -101,7 +101,6 @@ class ShoebotDirective(Directive):
             ]
             subprocess.call(cmd)
         except Exception as e:
-            print("Exception running shoebot script %e" % e)
             print("cmd: ")
             print(" ".join(cmd))
             raise ShoebotError(str(e))
