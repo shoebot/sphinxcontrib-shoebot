@@ -20,10 +20,7 @@ from pygments.formatters import HtmlFormatter
 from sphinx.errors import SphinxError
 from sphinx.util import ensuredir
 
-try:
-    from hashlib import sha1 as sha
-except ImportError:
-    from sha import sha
+from hashlib import sha1
 
 import subprocess
 
@@ -36,17 +33,16 @@ INLINESTYLES = False
 # The default formatter
 DEFAULT = HtmlFormatter(noclasses=INLINESTYLES)
 
-BOT_HEADER = """
+# Extra code added to every bot
+BOT_PRESET_SOURCE_CODE = """
 size{size}
 background(1)
 fill(.95,.75,0)
 """
 
 
-def get_hashid(text, options=""):
-    hashkey = (text + options).encode("utf-8")
-    hashid = sha(hashkey).hexdigest()
-    return hashid
+def get_hashid(text):
+    return sha1(text.encode("utf-8")).hexdigest()
 
 
 class ShoebotError(SphinxError):
@@ -58,22 +54,23 @@ def align(argument):
     return directives.choice(argument, ("left", "center", "right"))
 
 
-def size_opt(argument):
+def size_option(argument):
     """Decode the size option"""
     if isinstance(argument, tuple):
         return argument
-    else:
+    if isinstance(arg, str):
         return tuple(map(int, argument.split(",")))
+    raise ArgumentError("Expected size to be str or tuple")
 
 
 class ShoebotDirective(Directive):
-    """Source code syntax hightlighting."""
+    """Source code syntax highlighting."""
 
     required_arguments = 0
     optional_arguments = 1
     final_argument_whitespace = True
 
-    option_spec = {"alt": str, "filename": str, "size": size_opt, "source": str}
+    option_spec = {"alt": str, "filename": str, "size": size_option, "source": str}
     has_content = True
 
     def run(self):
@@ -81,22 +78,23 @@ class ShoebotDirective(Directive):
 
         env = self.state.document.settings.env
 
-        text = "\n".join(self.content)
-        parsed = highlight(text, PythonLexer(), HtmlFormatter())
-        result = [nodes.raw("", parsed, format="html")]
+        source_code = "\n".join(self.content)
+        parsed_code = highlight(source_code, PythonLexer(), HtmlFormatter())
+        result = [nodes.raw("", parsed_code, format="html")]
 
         options_dict = dict(self.options)
-        image_size = options_dict.get("size", (100, 100))
+        image_size = options_dict.get("size", (200, 200))
 
-        output_image = options_dict.get("filename") or "{}.png".format(get_hashid(text))
-        output_dir = os.path.normpath(env.srcdir + "/../build-images/examples")
+        output_image = options_dict.get("filename") or f"{get_hashid(source_code)}"
+        output_dir = os.path.normpath(f"{env.srcdir}/../build-images/examples")
 
         ensuredir(output_dir)
 
-        script_to_render = BOT_HEADER.format(size=image_size) + text
+        script_to_render = BOT_PRESET_SOURCE_CODE.format(size=image_size) + source_code
         try:
             cmd = [
                 "sbot",
+                "-V",
                 "-o",
                 os.path.join(output_dir, output_image),
                 script_to_render,
@@ -108,7 +106,7 @@ class ShoebotDirective(Directive):
             print(" ".join(cmd))
             raise ShoebotError(str(e))
 
-        image_node = nodes.image(uri="../build-images/examples/{}".format(output_image))
+        image_node = nodes.image(uri=f"../build-images/examples/{output_image}")
         result.insert(0, image_node)
 
         return result

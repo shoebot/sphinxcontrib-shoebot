@@ -10,10 +10,10 @@ Shoebot extension for Sphinx
 About
 =====
 
-This extensions allows rendering of shoebot bots using python_. 
+This extensions allows rendering of shoebot bots using python_.
 
 This extensions adds the ``shoebot`` directive that will replace the shoebot
-commands with the image of the graphics bot. 
+commands with the image of the graphics bot.
 
 
 Quick Example
@@ -22,7 +22,6 @@ Quick Example
 This source::
 
     .. shoebot::
-        :snapshot:
 
         size(100, 100)
         background(.8)
@@ -45,7 +44,6 @@ Options
 Size - change the size of the rendered bot.
 
     .. shoebot::
-        :snapshot:
         :size: 400, 400
 
         # On a 400x400 canvas draw some rectangles
@@ -53,10 +51,10 @@ Size - change the size of the rendered bot.
             nofill()
             strokewidth(20)
             stroke(0.75, 0., 0)
-            for i in xrange(380, 0, -40):
+            for i in range(380, 0, -40):
                 rect(200-i, 200-i, i*2, i*2)
 
-Used to change the canvas size without including 'size' in the 
+Used to change the canvas size without including 'size' in the
 script itself.
 
 Requirements
