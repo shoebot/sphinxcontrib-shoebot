@@ -37,7 +37,6 @@ DEFAULT = HtmlFormatter(noclasses=INLINESTYLES)
 BOT_PRESET_SOURCE_CODE = """
 size{size}
 background(1)
-fill(.95,.75,0)
 """
 
 
