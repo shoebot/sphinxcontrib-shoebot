@@ -57,7 +57,7 @@ def size_option(argument):
     """Decode the size option"""
     if isinstance(argument, tuple):
         return argument
-    if isinstance(arg, str):
+    if isinstance(argument, str):
         return tuple(map(int, argument.split(",")))
     raise ArgumentError("Expected size to be str or tuple")
 
@@ -84,12 +84,16 @@ class ShoebotDirective(Directive):
         options_dict = dict(self.options)
         image_size = options_dict.get("size", (200, 200))
 
-        output_image = options_dict.get("filename") or f"{get_hashid(source_code)}"
+        output_image = options_dict.get("filename") or get_hashid(source_code)
         output_dir = os.path.normpath(f"{env.srcdir}/../build-images/examples")
 
         ensuredir(output_dir)
 
         script_to_render = BOT_PRESET_SOURCE_CODE.format(size=image_size) + source_code
+        try:
+            os.unlink(os.path.join(output_dir, output_image))
+        except FileNotFoundError:
+            pass
         try:
             cmd = [
                 "sbot",
