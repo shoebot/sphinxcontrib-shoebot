@@ -82,7 +82,7 @@ class ShoebotDirective(Directive):
         result = [nodes.raw("", parsed_code, format="html")]
 
         options_dict = dict(self.options)
-        image_size = options_dict.get("size", (200, 200))
+        image_size = options_dict.get("size", (100, 100))
 
         output_image = options_dict.get("filename") or get_hashid(source_code)
         output_dir = os.path.normpath(f"{env.srcdir}/../build-images/examples")
