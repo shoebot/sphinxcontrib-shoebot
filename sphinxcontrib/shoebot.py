@@ -22,7 +22,7 @@ from sphinx.util import ensuredir
 
 from hashlib import sha1
 
-import subprocess
+import shoebot
 
 # Options
 # ~~~~~~~
@@ -82,7 +82,7 @@ class ShoebotDirective(Directive):
         result = [nodes.raw("", parsed_code, format="html")]
 
         options_dict = dict(self.options)
-        image_size = options_dict.get("size", (200, 200))
+        image_size = options_dict.get("size", (100, 100))
 
         output_image = options_dict.get("filename") or get_hashid(source_code)
         output_dir = os.path.normpath(f"{env.srcdir}/../build-images/examples")
@@ -90,25 +90,17 @@ class ShoebotDirective(Directive):
         ensuredir(output_dir)
 
         script_to_render = BOT_PRESET_SOURCE_CODE.format(size=image_size) + source_code
+        output_filename = os.path.join(output_dir, output_image)
         try:
-            os.unlink(os.path.join(output_dir, output_image))
+            os.unlink(output_filename)
         except FileNotFoundError:
             pass
-        try:
-            cmd = [
-                "sbot",
-                "-V",
-                "-o",
-                os.path.join(output_dir, output_image),
-                script_to_render,
-            ]
-            subprocess.call(cmd)
-        except Exception as e:
-            print("cmd: ")
-            print(" ".join(cmd))
-            raise ShoebotError(str(e))
 
-        image_node = nodes.image(uri=f"../build-images/examples/{output_image}")
+        with open(output_filename, "wb") as outfile:
+            bot = shoebot.create_bot(buff=outfile, format="png")
+            bot.run(script_to_render)
+
+        image_node = nodes.image(uri=f"/../build-images/examples/{output_image}")
         result.insert(0, image_node)
 
         return result
