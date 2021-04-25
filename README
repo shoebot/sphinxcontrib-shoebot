@@ -10,14 +10,14 @@ Shoebot extension for Sphinx
 About
 =====
 
-This extensions allows rendering of shoebot bots using python_.
+This extension allows rendering of Shoebot scripts using python_.
 
-This extensions adds the ``shoebot`` directive that will replace the shoebot
-commands with the image of the graphics bot.
+It adds the ``shoebot`` directive, which renders the script contents into
+an image and displays it alongside the script source.
 
 
-Quick Example
--------------
+Example
+-------
 
 This source::
 
@@ -86,6 +86,3 @@ Just add ``sphinxcontrib.shoebot`` to the list of extensions in the ``conf.py``
 file. For example::
 
     extensions = ['sphinxcontrib.shoebot']
-
-
-
