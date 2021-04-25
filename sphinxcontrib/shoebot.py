@@ -62,6 +62,13 @@ def size_option(argument):
     raise ArgumentError("Expected size to be str or tuple")
 
 
+def ximports_option(argument):
+    """Decode the ximports option"""
+    if isinstance(argument, str):
+        return [l for l in argument.strip(" ()").split(",") if l]
+    raise ArgumentError("Expected a comma-separated list of libraries")
+
+
 class ShoebotDirective(Directive):
     """Source code syntax highlighting."""
 
@@ -69,7 +76,13 @@ class ShoebotDirective(Directive):
     optional_arguments = 1
     final_argument_whitespace = True
 
-    option_spec = {"alt": str, "filename": str, "size": size_option, "source": str}
+    option_spec = {
+        "alt": str,
+        "filename": str,
+        "size": size_option,
+        "source": str,
+        "ximports": ximports_option,
+    }
     has_content = True
 
     def run(self):
@@ -83,6 +96,7 @@ class ShoebotDirective(Directive):
 
         options_dict = dict(self.options)
         image_size = options_dict.get("size", (100, 100))
+        ximports = options_dict.get("ximports", "")
 
         output_image = options_dict.get("filename") or get_hashid(source_code)
         output_dir = os.path.normpath(f"{env.srcdir}/../build-images/examples")
@@ -98,6 +112,8 @@ class ShoebotDirective(Directive):
 
         with open(output_filename, "wb") as outfile:
             bot = shoebot.create_bot(buff=outfile, format="png")
+            for libname in ximports:
+                bot.ximport(libname)
             bot.run(script_to_render)
 
         image_node = nodes.image(uri=f"/../build-images/examples/{output_image}")
