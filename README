@@ -10,14 +10,14 @@ Shoebot extension for Sphinx
 About
 =====
 
-This extensions allows rendering of shoebot bots using python_.
+This extension allows rendering of Shoebot scripts using python_.
 
-This extensions adds the ``shoebot`` directive that will replace the shoebot
-commands with the image of the graphics bot.
+It adds the ``shoebot`` directive, which renders the script contents into
+an image and displays it alongside the script source.
 
 
-Quick Example
--------------
+Example
+-------
 
 This source::
 
@@ -41,21 +41,26 @@ The directive 'snapshot' specifies that it will generate a single image.
 Options
 -------
 
-Size - change the size of the rendered bot.
+The **size** option is used to change the canvas size without including the
+size() command in the script itself.
 
     .. shoebot::
         :size: 400, 400
 
         # On a 400x400 canvas draw some rectangles
-        def draw():
-            nofill()
-            strokewidth(20)
-            stroke(0.75, 0., 0)
-            for i in range(380, 0, -40):
-                rect(200-i, 200-i, i*2, i*2)
+        nofill()
+        strokewidth(20)
+        stroke(0.75, 0., 0)
+        for i in range(380, 0, -40):
+            rect(200-i, 200-i, i*2, i*2)
 
-Used to change the canvas size without including 'size' in the
-script itself.
+
+The **ximports** option takes care of importing Shoebot libraries, specified
+in a comma-separated sequence without quotes or brackets.
+
+    .. shoebot::
+        :ximports: cornu, colors, photobot
+
 
 Requirements
 ------------
@@ -81,6 +86,3 @@ Just add ``sphinxcontrib.shoebot`` to the list of extensions in the ``conf.py``
 file. For example::
 
     extensions = ['sphinxcontrib.shoebot']
-
-
-
